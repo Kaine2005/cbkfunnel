@@ -20,7 +20,7 @@
   <meta name="twitter:description" content="Facebook Ads for Scottish Trades. We film your work, run ads to homeowners in your area, and send qualified leads straight to your phone.">
   <meta name="twitter:image" content="https://go.copybykaine.com/assets/og.jpg">
 
-  <!-- Favicon (inline SVG) -->
+  <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230D0D0D'/%3E%3Ctext x='50' y='74' font-family='Georgia%2C serif' font-size='54' font-weight='900' text-anchor='middle' fill='white'%3EC%3Ctspan fill='%23E8A019'%3EB%3C/tspan%3EK%3C/text%3E%3C/svg%3E" type="image/svg+xml">
 
   <!-- ============================================================
@@ -70,17 +70,69 @@
     button { font-family: inherit; cursor: pointer; border: none; background: none; }
 
     /* =============================================
-       ANIMATIONS
+       KEYFRAMES
     ============================================= */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity 0.65s ease, transform 0.65s ease;
-    }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    @media (prefers-reduced-motion: no-preference) {
 
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(36px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+      }
+
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50%       { transform: translateY(-8px); }
+      }
+
+      @keyframes drawLine {
+        from { width: 0; }
+        to   { width: 40px; }
+      }
+
+      @keyframes pulseAmber {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(232,160,25,0); }
+        50%       { box-shadow: 0 0 18px 4px rgba(232,160,25,0.18); }
+      }
+
+      /* Hero staggered entrance */
+      .hero__label    { animation: slideUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.1s both; }
+      .hero__line1    { animation: slideUp 0.6s  cubic-bezier(0.22,1,0.36,1) 0.28s both; }
+      .hero__line2    { animation: slideUp 0.6s  cubic-bezier(0.22,1,0.36,1) 0.42s both; }
+      .hero__sub      { animation: slideUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.6s  both; }
+      .video-wrap     { animation: slideUp 0.65s cubic-bezier(0.22,1,0.36,1) 0.72s both,
+                                   float 5s ease-in-out 1.6s infinite; }
+      .hero__cta      { animation: slideUp 0.5s  cubic-bezier(0.22,1,0.36,1) 0.88s both; }
+
+      /* Pulse the amber CTA */
+      .btn--amber     { animation: pulseAmber 3s ease-in-out 2s infinite; }
+
+      /* Scroll-triggered fade-up for everything else */
+      .fade-up {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.65s ease, transform 0.65s ease;
+      }
+      .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+      /* Divider draws in when parent is visible */
+      .fade-up .divider {
+        width: 0;
+        transition: width 0.5s ease 0.3s;
+      }
+      .fade-up.visible .divider { width: 40px; }
+    }
+
+    /* Ensure reduced-motion users see everything immediately */
     @media (prefers-reduced-motion: reduce) {
+      .hero__label, .hero__line1, .hero__line2, .hero__sub,
+      .video-wrap, .hero__cta { animation: none; opacity: 1; transform: none; }
       .fade-up { opacity: 1; transform: none; transition: none; }
+      .divider  { width: 40px; }
     }
 
     /* =============================================
@@ -94,7 +146,6 @@
       text-transform: uppercase;
       color: var(--muted);
     }
-
     .label--amber { color: var(--amber); }
 
     /* =============================================
@@ -119,40 +170,22 @@
       font-weight: 500;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      padding: 0.75rem 1.5rem;
+      padding: 0.85rem 1.75rem;
       border-radius: 2px;
       cursor: pointer;
-      transition: background 0.2s ease, color 0.2s ease, outline-offset 0.1s;
+      transition: background 0.2s ease, transform 0.15s ease;
       white-space: nowrap;
     }
+    .btn:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
+    .btn:active        { transform: scale(0.97); }
 
-    .btn:focus-visible {
-      outline: 2px solid var(--amber);
-      outline-offset: 3px;
-    }
-
-    .btn--amber {
-      background: var(--amber);
-      color: #000;
-    }
-
+    .btn--amber     { background: var(--amber); color: #000; }
     .btn--amber:hover { background: #f5b030; }
 
-    .btn--amber-sm {
-      background: var(--amber);
-      color: #000;
-      font-size: 0.6875rem;
-      padding: 0.55rem 1.1rem;
-    }
-
+    .btn--amber-sm  { background: var(--amber); color: #000; font-size: 0.6875rem; padding: 0.55rem 1.1rem; }
     .btn--amber-sm:hover { background: #f5b030; }
 
-    .btn--ghost {
-      background: transparent;
-      color: var(--white);
-      border: 1px solid var(--border);
-    }
-
+    .btn--ghost     { background: transparent; color: var(--white); border: 1px solid var(--border); }
     .btn--ghost:hover { border-color: var(--muted); }
 
     /* =============================================
@@ -162,17 +195,17 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: var(--bg);
+      background: rgba(13,13,13,0.96);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--border);
     }
-
     .topbar__inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
       height: 56px;
     }
-
     .logo {
       font-family: var(--font-heading);
       font-size: 1.75rem;
@@ -180,50 +213,54 @@
       line-height: 1;
       color: var(--white);
     }
-
     .logo span { color: var(--amber); }
 
     /* =============================================
        HERO
     ============================================= */
     .hero {
-      padding: 4rem 0 3rem;
+      padding: 4rem 0 3.5rem;
       text-align: center;
+      overflow: hidden;
     }
+    .hero__label    { margin-bottom: 1.25rem; }
+    .hero__headline { margin-bottom: 1.25rem; }
 
-    .hero__label {
-      margin-bottom: 1.25rem;
-    }
-
-    .hero__headline {
+    .hero__line1,
+    .hero__line2 {
+      display: block;
       font-family: var(--font-heading);
-      font-size: clamp(3.5rem, 14vw, 7.5rem);
-      line-height: 0.95;
+      font-size: clamp(3.75rem, 15vw, 8rem);
+      line-height: 0.92;
       letter-spacing: 0.02em;
-      margin-bottom: 1.25rem;
       color: var(--white);
     }
 
     .hero__sub {
       font-size: 1rem;
       color: var(--muted);
-      max-width: 520px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.7;
+      max-width: 500px;
+      margin: 0 auto 2.75rem;
+      line-height: 1.75;
     }
 
-    /* Video */
+    /* CTA below video */
+    .hero__cta { display: inline-block; }
+
+    /* =============================================
+       VIDEO
+    ============================================= */
     .video-wrap {
       position: relative;
       width: 100%;
-      max-width: 380px;
-      margin: 0 auto 2rem;
+      max-width: 360px;
+      margin: 0 auto 2.25rem;
       aspect-ratio: 4 / 5;
       background: var(--card);
       overflow: hidden;
-      border-radius: 3px;
+      border-radius: 4px;
+      box-shadow: 0 0 0 1px var(--border), 0 32px 64px rgba(0,0,0,0.7), 0 0 40px rgba(232,160,25,0.1);
     }
-
     .video-wrap video {
       width: 100%;
       height: 100%;
@@ -240,41 +277,32 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--white);
-      background: rgba(0,0,0,0.65);
-      border: 1px solid rgba(255,255,255,0.2);
-      padding: 0.4rem 0.75rem;
+      background: rgba(0,0,0,0.7);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 0.45rem 0.8rem;
       border-radius: 2px;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 0.4rem;
-      transition: background 0.2s;
+      transition: background 0.2s, border-color 0.2s;
     }
-
-    .video-sound-btn:hover { background: rgba(0,0,0,0.85); }
+    .video-sound-btn:hover        { background: rgba(0,0,0,0.9); border-color: rgba(255,255,255,0.4); }
     .video-sound-btn:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
-
-    .video-sound-btn svg {
-      width: 14px;
-      height: 14px;
-      flex-shrink: 0;
-    }
+    .video-sound-btn svg           { width: 13px; height: 13px; flex-shrink: 0; }
 
     @media (min-width: 768px) {
-      .video-wrap { max-width: 340px; }
+      .video-wrap { max-width: 320px; }
     }
 
     /* =============================================
-       PIPELINE (How it works)
+       PIPELINE
     ============================================= */
     .pipeline {
-      padding: 5rem 0;
+      padding: 5.5rem 0;
       border-top: 1px solid var(--border);
     }
-
-    .section-header {
-      margin-bottom: 3rem;
-    }
+    .section-header { margin-bottom: 3rem; }
 
     .pipeline__grid {
       display: grid;
@@ -283,73 +311,113 @@
       background: var(--border);
       border: 1px solid var(--border);
     }
-
     .pipeline__card {
       background: var(--card);
-      padding: 2rem 1.75rem;
+      padding: 2.25rem 2rem;
+      border-left: 2px solid transparent;
+      transition: background 0.25s ease, border-left-color 0.25s ease, transform 0.25s ease;
+      cursor: default;
     }
-
+    .pipeline__card:hover {
+      background: #202020;
+      border-left-color: var(--amber);
+      transform: translateY(-3px);
+    }
     .pipeline__num {
       font-family: var(--font-heading);
-      font-size: 3rem;
+      font-size: 3.25rem;
       line-height: 1;
       color: var(--amber);
       letter-spacing: 0.04em;
       margin-bottom: 0.75rem;
     }
-
     .pipeline__title {
       font-family: var(--font-heading);
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       letter-spacing: 0.06em;
       color: var(--white);
       margin-bottom: 0.5rem;
     }
-
     .pipeline__desc {
       font-size: 0.9375rem;
       color: var(--muted);
       line-height: 1.65;
     }
-
-    @media (min-width: 640px) {
-      .pipeline__grid { grid-template-columns: 1fr 1fr; }
-    }
-
-    @media (min-width: 1024px) {
-      .pipeline__grid { grid-template-columns: repeat(4, 1fr); }
-    }
+    @media (min-width: 640px)  { .pipeline__grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1024px) { .pipeline__grid { grid-template-columns: repeat(4, 1fr); } }
 
     /* =============================================
-       REVIEWS
+       REVIEWS CAROUSEL
     ============================================= */
     .reviews {
-      padding: 5rem 0;
+      padding: 5.5rem 0;
       border-top: 1px solid var(--border);
     }
 
-    .reviews__grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
+    .carousel {
+      position: relative;
+      user-select: none;
+    }
+
+    .carousel__viewport {
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .carousel__track {
+      display: flex;
+      transition: transform 0.48s cubic-bezier(0.25, 0.1, 0.25, 1);
+      will-change: transform;
+    }
+
+    .carousel__slide {
+      flex: 0 0 100%;
+      min-width: 0;
+      padding: 0 0.25rem;
+    }
+
+    @media (min-width: 640px) {
+      .carousel__slide { flex: 0 0 calc(100% / 1.15); }
+    }
+    @media (min-width: 1024px) {
+      .carousel__slide { flex: 0 0 calc(100% / 2.1); }
     }
 
     .review-card {
       background: var(--card);
       border: 1px solid var(--border);
-      padding: 1.75rem;
+      padding: 1.875rem;
       border-radius: 2px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+    .review-card:hover {
+      border-color: rgba(232,160,25,0.3);
+      transform: translateY(-2px);
+    }
+
+    .review-card__stars {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 1rem;
+    }
+    .review-card__stars svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
     }
 
     .review-card__quote {
       font-size: 0.9375rem;
       color: var(--white);
-      line-height: 1.7;
-      margin-bottom: 1.25rem;
+      line-height: 1.75;
+      flex: 1;
+      margin-bottom: 1.375rem;
     }
-
-    .review-card__quote::before { content: '"'; }
-    .review-card__quote::after  { content: '"'; }
+    .review-card__quote::before { content: '\201C'; }
+    .review-card__quote::after  { content: '\201D'; }
 
     .review-card__name {
       font-family: var(--font-label);
@@ -359,12 +427,10 @@
       color: var(--white);
       margin-bottom: 0.2rem;
     }
-
     .review-card__meta {
       font-size: 0.8125rem;
       color: var(--muted);
     }
-
     .review-card__result {
       margin-top: 0.875rem;
       font-family: var(--font-label);
@@ -374,24 +440,67 @@
       color: var(--amber);
     }
 
-    @media (min-width: 768px) {
-      .reviews__grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    /* Controls */
+    .carousel__controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.25rem;
+      margin-top: 2rem;
     }
+
+    .carousel__btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--muted);
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .carousel__btn:hover         { color: var(--white); border-color: var(--amber); background: #202020; }
+    .carousel__btn:focus-visible  { outline: 2px solid var(--amber); outline-offset: 2px; }
+    .carousel__btn:disabled       { opacity: 0.3; cursor: not-allowed; }
+    .carousel__btn svg            { width: 18px; height: 18px; }
+
+    .carousel__dots {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .carousel__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .carousel__dot--active {
+      background: var(--amber);
+      transform: scale(1.4);
+    }
+    .carousel__dot:focus-visible { outline: 2px solid var(--amber); outline-offset: 3px; }
 
     /* =============================================
        THE DEAL
     ============================================= */
     .deal {
-      padding: 5rem 0;
+      padding: 5.5rem 0;
       border-top: 1px solid var(--border);
     }
-
     .deal__grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 1rem;
     }
-
     .deal__card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -400,17 +509,13 @@
       display: flex;
       gap: 1.25rem;
       align-items: flex-start;
+      transition: border-color 0.25s ease, transform 0.25s ease;
     }
-
-    .deal__tick {
-      flex-shrink: 0;
-      width: 24px;
-      height: 24px;
-      margin-top: 2px;
+    .deal__card:hover {
+      border-color: rgba(232,160,25,0.3);
+      transform: translateY(-3px);
     }
-
-    .deal__content {}
-
+    .deal__tick          { flex-shrink: 0; width: 24px; height: 24px; margin-top: 2px; }
     .deal__title {
       font-family: var(--font-label);
       font-size: 0.6875rem;
@@ -419,32 +524,19 @@
       color: var(--amber);
       margin-bottom: 0.4rem;
     }
-
-    .deal__desc {
-      font-size: 1rem;
-      color: var(--white);
-      line-height: 1.5;
-    }
-
-    @media (min-width: 768px) {
-      .deal__grid { grid-template-columns: repeat(3, 1fr); }
-    }
+    .deal__desc          { font-size: 1rem; color: var(--white); line-height: 1.5; }
+    @media (min-width: 768px) { .deal__grid { grid-template-columns: repeat(3, 1fr); } }
 
     /* =============================================
        FOUNDER STRIP
     ============================================= */
-    .founder {
-      padding: 4.5rem 0;
-      border-top: 1px solid var(--border);
-    }
-
+    .founder { padding: 4.5rem 0; border-top: 1px solid var(--border); }
     .founder__inner {
       display: flex;
       flex-direction: column;
       gap: 1.5rem;
       align-items: flex-start;
     }
-
     .founder__photo {
       width: 72px;
       height: 72px;
@@ -453,35 +545,18 @@
       border: 2px solid var(--border);
       flex-shrink: 0;
     }
-
-    .founder__text {
-      font-size: 1.0625rem;
-      color: var(--muted);
-      line-height: 1.7;
-      max-width: 540px;
-    }
-
-    .founder__text strong {
-      color: var(--white);
-      font-weight: 600;
-    }
-
-    @media (min-width: 640px) {
-      .founder__inner { flex-direction: row; align-items: center; }
-    }
+    .founder__text          { font-size: 1.0625rem; color: var(--muted); line-height: 1.7; max-width: 540px; }
+    .founder__text strong   { color: var(--white); font-weight: 600; }
+    @media (min-width: 640px) { .founder__inner { flex-direction: row; align-items: center; } }
 
     /* =============================================
        FORM SECTION
     ============================================= */
     .form-section {
-      padding: 5rem 0 6rem;
+      padding: 5.5rem 0 6rem;
       border-top: 1px solid var(--border);
     }
-
-    .form-section__label {
-      margin-bottom: 1rem;
-    }
-
+    .form-section__label    { margin-bottom: 1rem; }
     .form-section__headline {
       font-family: var(--font-heading);
       font-size: clamp(2.5rem, 9vw, 5.5rem);
@@ -489,67 +564,27 @@
       letter-spacing: 0.02em;
       margin-bottom: 0.75rem;
     }
+    .form-section__sub { font-size: 0.9375rem; color: var(--muted); margin-bottom: 2.5rem; }
 
-    .form-section__sub {
-      font-size: 0.9375rem;
-      color: var(--muted);
-      margin-bottom: 2.5rem;
-    }
-
-    /* GHL form container */
-    .ghl-container {
-      width: 100%;
-      max-width: 640px;
-      overflow: hidden;
-    }
-
-    /* Ensure GHL iframe (if used) fills width with no horizontal scroll */
-    .ghl-container iframe {
-      width: 100% !important;
-      min-height: 480px;
-      border: none;
-      display: block;
-    }
+    .ghl-container { width: 100%; max-width: 640px; overflow: hidden; }
+    .ghl-container iframe { width: 100% !important; min-height: 480px; border: none; display: block; }
 
     /* =============================================
        FOOTER
     ============================================= */
-    .footer {
-      padding: 2.5rem 0;
-      border-top: 1px solid var(--border);
-    }
-
+    .footer { padding: 2.5rem 0; border-top: 1px solid var(--border); }
     .footer__inner {
       display: flex;
       flex-direction: column;
       gap: 1rem;
       align-items: flex-start;
     }
-
-    .footer__links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.25rem;
-      align-items: center;
-    }
-
-    .footer__link {
-      font-size: 0.8125rem;
-      color: var(--muted);
-      transition: color 0.2s;
-    }
-
-    .footer__link:hover { color: var(--white); }
+    .footer__links         { display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: center; }
+    .footer__link          { font-size: 0.8125rem; color: var(--muted); transition: color 0.2s; }
+    .footer__link:hover    { color: var(--white); }
     .footer__link:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
-
-    .footer__copy {
-      font-size: 0.75rem;
-      color: #555;
-    }
-
-    @media (min-width: 640px) {
-      .footer__inner { flex-direction: row; justify-content: space-between; align-items: center; }
-    }
+    .footer__copy          { font-size: 0.75rem; color: #555; }
+    @media (min-width: 640px) { .footer__inner { flex-direction: row; justify-content: space-between; align-items: center; } }
 
     /* =============================================
        STICKY BOTTOM BAR (mobile only)
@@ -557,60 +592,39 @@
     .sticky-bar {
       display: none;
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      bottom: 0; left: 0; right: 0;
       z-index: 200;
-      background: var(--bg);
+      background: rgba(13,13,13,0.96);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       border-top: 1px solid var(--border);
       padding: 0.875rem 1.25rem;
       transform: translateY(0);
-      transition: transform 0.3s ease;
+      transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
     }
-
-    .sticky-bar.hidden { transform: translateY(110%); }
-
-    .sticky-bar .btn {
-      width: 100%;
-      padding: 1rem;
-      font-size: 0.8125rem;
-    }
+    .sticky-bar.hidden     { transform: translateY(110%); }
+    .sticky-bar .btn       { width: 100%; padding: 1rem; font-size: 0.8125rem; }
 
     @media (max-width: 767px) {
-      .sticky-bar { display: block; }
-      /* Extra bottom padding so content isn't hidden behind sticky bar */
-      .form-section { padding-bottom: 7rem; }
+      .sticky-bar           { display: block; }
+      .form-section         { padding-bottom: 7rem; }
     }
 
     /* =============================================
-       MISC UTILITIES
+       MISC
     ============================================= */
     .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      overflow: hidden;
-      clip: rect(0,0,0,0);
-      white-space: nowrap;
-      border: 0;
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; overflow: hidden; clip: rect(0,0,0,0);
+      white-space: nowrap; border: 0;
     }
-
-    /* Divider line */
-    .divider {
-      width: 40px;
-      height: 2px;
-      background: var(--amber);
-      margin: 1rem 0 0;
-    }
+    .divider { width: 40px; height: 2px; background: var(--amber); margin: 1rem 0 0; }
   </style>
 </head>
 
 <body>
 
-  <!-- =============================================
-       TOP BAR
-  ============================================= -->
+  <!-- TOP BAR -->
   <header class="topbar" role="banner">
     <div class="container topbar__inner">
       <a href="/" class="logo" aria-label="CopyByKaine home">C<span>B</span>K</a>
@@ -620,16 +634,16 @@
 
   <main>
 
-    <!-- =============================================
-         HERO
-    ============================================= -->
-    <section class="hero fade-up" aria-labelledby="hero-headline">
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-headline">
       <div class="container">
         <p class="label hero__label">Facebook Ads for Scottish Trades</p>
-        <h1 class="hero__headline" id="hero-headline">MORE JOBS.<br>LESS CHASING.</h1>
+        <h1 class="hero__headline" id="hero-headline">
+          <span class="hero__line1">MORE JOBS.</span>
+          <span class="hero__line2">LESS CHASING.</span>
+        </h1>
         <p class="hero__sub">We film your work, run ads to homeowners in your area, filter out the time wasters and send qualified leads straight to your phone.</p>
 
-        <!-- Video -->
         <div class="video-wrap">
           <video
             src="assets/cbk-pipeline.mp4"
@@ -638,17 +652,15 @@
             muted
             loop
             playsinline
-            loading="lazy"
+            preload="metadata"
             aria-label="CBK pipeline overview video"
           ></video>
           <button class="video-sound-btn" id="soundBtn" aria-label="Unmute video" aria-pressed="false">
-            <!-- Muted icon -->
             <svg id="iconMuted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
               <line x1="23" y1="9" x2="17" y2="15"></line>
               <line x1="17" y1="9" x2="23" y2="15"></line>
             </svg>
-            <!-- Sound icon (hidden by default) -->
             <svg id="iconSound" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none;">
               <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
               <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
@@ -658,124 +670,120 @@
           </button>
         </div>
 
-        <a href="#form" class="btn btn--amber">See if your area's free</a>
+        <a href="#form" class="btn btn--amber hero__cta">See if your area's free</a>
       </div>
     </section>
 
-    <!-- =============================================
-         HOW IT WORKS (THE CBK PIPELINE)
-    ============================================= -->
-    <section class="pipeline" aria-labelledby="pipeline-heading">
+    <!-- PIPELINE -->
+    <section class="pipeline" aria-label="The CBK Pipeline">
       <div class="container">
         <div class="section-header fade-up">
           <p class="label label--amber">The CBK Pipeline</p>
           <div class="divider"></div>
         </div>
-
         <div class="pipeline__grid" role="list">
-
-          <article class="pipeline__card fade-up" role="listitem" style="transition-delay: 0.05s;">
+          <article class="pipeline__card fade-up" role="listitem" style="transition-delay:0.06s;">
             <p class="pipeline__num" aria-hidden="true">01</p>
             <h3 class="pipeline__title">Film</h3>
             <p class="pipeline__desc">We come out and film your real work.</p>
           </article>
-
-          <article class="pipeline__card fade-up" role="listitem" style="transition-delay: 0.1s;">
+          <article class="pipeline__card fade-up" role="listitem" style="transition-delay:0.12s;">
             <p class="pipeline__num" aria-hidden="true">02</p>
             <h3 class="pipeline__title">Target</h3>
             <p class="pipeline__desc">We turn it into ads aimed at homeowners in your area.</p>
           </article>
-
-          <article class="pipeline__card fade-up" role="listitem" style="transition-delay: 0.15s;">
+          <article class="pipeline__card fade-up" role="listitem" style="transition-delay:0.18s;">
             <p class="pipeline__num" aria-hidden="true">03</p>
             <h3 class="pipeline__title">Filter</h3>
             <p class="pipeline__desc">Every enquiry answers a few quick questions: timeline, location, budget. Tyre kickers drop out.</p>
           </article>
-
-          <article class="pipeline__card fade-up" role="listitem" style="transition-delay: 0.2s;">
+          <article class="pipeline__card fade-up" role="listitem" style="transition-delay:0.24s;">
             <p class="pipeline__num" aria-hidden="true">04</p>
             <h3 class="pipeline__title">Deliver</h3>
             <p class="pipeline__desc">Qualified leads land on your phone, ready to book.</p>
           </article>
-
         </div>
       </div>
     </section>
 
-    <!-- =============================================
-         REVIEWS (rendered from JS array below)
-    ============================================= -->
-    <section class="reviews" id="reviews-section" aria-labelledby="reviews-heading" hidden>
+    <!-- REVIEWS CAROUSEL -->
+    <section class="reviews fade-up" id="reviews-section" aria-label="Client reviews">
       <div class="container">
-        <div class="section-header fade-up">
+        <div class="section-header">
           <p class="label label--amber">What Trades Say</p>
           <div class="divider"></div>
         </div>
-        <div class="reviews__grid" id="reviews-grid" role="list"></div>
+        <div class="carousel" id="reviews-carousel">
+          <div class="carousel__viewport">
+            <div class="carousel__track" id="carousel-track" role="list"></div>
+          </div>
+          <div class="carousel__controls" aria-label="Carousel controls">
+            <button class="carousel__btn" id="carousel-prev" aria-label="Previous review">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <div class="carousel__dots" id="carousel-dots" role="tablist" aria-label="Review navigation"></div>
+            <button class="carousel__btn" id="carousel-next" aria-label="Next review">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- =============================================
-         THE DEAL
-    ============================================= -->
-    <section class="deal" aria-labelledby="deal-heading">
+    <!-- THE DEAL -->
+    <section class="deal" aria-label="How it works">
       <div class="container">
         <div class="section-header fade-up">
           <p class="label label--amber">How it works</p>
           <div class="divider"></div>
         </div>
-
         <div class="deal__grid">
-
-          <div class="deal__card fade-up" style="transition-delay: 0.05s;">
+          <div class="deal__card fade-up" style="transition-delay:0.06s;">
             <svg class="deal__tick" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <circle cx="12" cy="12" r="11" stroke="#E8A019" stroke-width="1.5"/>
               <path d="M7.5 12.5l3 3 6-6" stroke="#E8A019" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <div class="deal__content">
+            <div>
               <p class="deal__title">One-off Setup Fee</p>
               <p class="deal__desc">We build the whole system for you.</p>
             </div>
           </div>
-
-          <div class="deal__card fade-up" style="transition-delay: 0.1s;">
+          <div class="deal__card fade-up" style="transition-delay:0.12s;">
             <svg class="deal__tick" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <circle cx="12" cy="12" r="11" stroke="#E8A019" stroke-width="1.5"/>
               <path d="M7.5 12.5l3 3 6-6" stroke="#E8A019" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <div class="deal__content">
+            <div>
               <p class="deal__title">We Earn When You Win</p>
               <p class="deal__desc">A percentage of the jobs you close.</p>
             </div>
           </div>
-
-          <div class="deal__card fade-up" style="transition-delay: 0.15s;">
+          <div class="deal__card fade-up" style="transition-delay:0.18s;">
             <svg class="deal__tick" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <circle cx="12" cy="12" r="11" stroke="#E8A019" stroke-width="1.5"/>
               <path d="M7.5 12.5l3 3 6-6" stroke="#E8A019" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-            <div class="deal__content">
+            <div>
               <p class="deal__title">One Trade Per Area</p>
               <p class="deal__desc">Your local competitors can't sign up.</p>
             </div>
           </div>
-
         </div>
       </div>
     </section>
 
-    <!-- =============================================
-         FOUNDER STRIP
-    ============================================= -->
+    <!-- FOUNDER -->
     <section class="founder fade-up" aria-label="About Kaine">
       <div class="container">
         <div class="founder__inner">
-          <!-- Photo hidden if assets/kaine.jpg is missing (handled by onerror) -->
           <img
             src="assets/kaine.jpg"
             alt="Kaine, founder of CopyByKaine"
             class="founder__photo"
-            id="founderPhoto"
             loading="lazy"
             onerror="this.style.display='none'"
           >
@@ -786,16 +794,13 @@
       </div>
     </section>
 
-    <!-- =============================================
-         FORM SECTION
-    ============================================= -->
+    <!-- FORM -->
     <section class="form-section" id="form" aria-labelledby="form-heading">
       <div class="container">
         <p class="label form-section__label label--amber">Takes 60 seconds</p>
         <h2 class="form-section__headline" id="form-heading">IS YOUR AREA<br>STILL FREE?</h2>
         <p class="form-section__sub">I'll get back to you the same day.</p>
-
-        <div class="ghl-container" id="ghl-container">
+        <div class="ghl-container">
           <iframe src="https://api.leadconnectorhq.com/widget/survey/0tgoIQWsVPhWBl4MhB8l" style="border:none;width:100%;" scrolling="no" id="0tgoIQWsVPhWBl4MhB8l" title="Qualification survey" data-cookie-consent="true" data-cookie-consent-provider="auto"></iframe>
           <script src="https://link.msgsndr.com/js/form_embed.js"></script>
         </div>
@@ -804,12 +809,10 @@
 
   </main>
 
-  <!-- =============================================
-       FOOTER
-  ============================================= -->
+  <!-- FOOTER -->
   <footer class="footer" role="contentinfo">
     <div class="container footer__inner">
-      <a href="/" class="logo" style="font-size: 1.35rem;" aria-label="CopyByKaine home">C<span>B</span>K</a>
+      <a href="/" class="logo" style="font-size:1.35rem;" aria-label="CopyByKaine home">C<span>B</span>K</a>
       <nav class="footer__links" aria-label="Footer links">
         <a href="mailto:kaine@copybykaine.com" class="footer__link">kaine@copybykaine.com</a>
         <a href="https://copybykaine.com" class="footer__link" target="_blank" rel="noopener">copybykaine.com</a>
@@ -818,113 +821,213 @@
     </div>
   </footer>
 
-  <!-- =============================================
-       STICKY BOTTOM BAR (mobile only)
-  ============================================= -->
+  <!-- STICKY BOTTOM BAR -->
   <div class="sticky-bar" id="stickyBar" role="region" aria-label="Fixed call to action">
     <a href="#form" class="btn btn--amber">See if your area's free</a>
   </div>
 
 
-  <!-- =============================================
-       SCRIPTS
-  ============================================= -->
   <script>
     // =============================================================
-    // REVIEWS ARRAY
-    // Edit the objects below to add your reviews.
-    // Each object supports:
-    //   quote    (string, required)   - what they said
-    //   name     (string, required)   - first name or full name
-    //   business (string, required)   - business name
-    //   trade    (string, required)   - trade type
-    //   town     (string, required)   - town, Scotland
-    //   result   (string, optional)   - amber result line e.g. "14 leads in 4 weeks"
-    //
-    // Leave the array empty ([]) to hide the entire section.
+    // REVIEWS
+    // Edit this array to update the carousel.
+    // Fields: quote, name, business, trade, town, result (optional)
+    // Leave empty ([]) to hide the section.
     // =============================================================
-    const reviews = [
-      // {
-      //   quote: "Paste the review text here exactly as they wrote it.",
-      //   name: "First Name",
-      //   business: "Business Name Ltd",
-      //   trade: "Plumber",
-      //   town: "Dundee",
-      //   result: "12 jobs booked in the first month"
-      // },
+    var reviews = [
+      {
+        quote:    "We've had a great experience working with Kaine and would highly recommend his services. He set up our website and works closely with us as a business partner across Facebook and Google. Weekly check-ins, always looking at ways to generate better leads, and genuinely invested in helping us succeed. He's gone above and beyond. Highly recommended!",
+        name:     "Craig Finnigan",
+        business: "EBW",
+        trade:    "Facebook & Google Ads",
+        town:     "Scotland",
+        result:   "5 stars on Google"
+      },
+      {
+        quote:    "We chose Kaine to manage advertising for our exterior cleaning company and couldn't be happier. Professional in everything from communication to timekeeping, and the service he delivers has transformed our business. Highly recommend CopyByKaine for any tradesmen looking to generate leads.",
+        name:     "Wusch",
+        business: "Wusch Exterior Cleaning",
+        trade:    "Pressure Washing",
+        town:     "Fife, Scotland",
+        result:   "5 stars on Google"
+      },
+      {
+        quote:    "Genuinely couldn't be happier with my new website! Great communication, no stress, Kaine really listened to what I wanted. The design blew me away and the turnaround was faster than I expected. If you're thinking about getting a website built, just do it. Highly recommend!",
+        name:     "Jay",
+        business: "",
+        trade:    "Website Design Client",
+        town:     "Scotland",
+        result:   "5 stars on Google"
+      },
+      {
+        quote:    "Kaine is excellent at what he does. He took the lead on recent ad work for my business and increased both reach and engagement with great insight. He also created automated copy for our client management system which saved me a great deal of time. Thoroughly recommend him.",
+        name:     "Ryan Beattie",
+        business: "Google Local Guide",
+        trade:    "Ads & Automation",
+        town:     "Scotland",
+        result:   "5 stars on Google"
+      }
     ];
 
-    // Render reviews
+    // =============================================================
+    // STAR SVG
+    // =============================================================
+    function starSvg() {
+      return '<svg viewBox="0 0 24 24" fill="#E8A019" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+    }
+
+    // =============================================================
+    // BUILD CAROUSEL
+    // =============================================================
     (function () {
-      const section = document.getElementById('reviews-section');
-      const grid    = document.getElementById('reviews-grid');
+      if (!reviews.length) {
+        document.getElementById('reviews-section').style.display = 'none';
+        return;
+      }
 
-      if (!reviews.length) return;
+      var track  = document.getElementById('carousel-track');
+      var dots   = document.getElementById('carousel-dots');
+      var btnPrev = document.getElementById('carousel-prev');
+      var btnNext = document.getElementById('carousel-next');
 
-      section.removeAttribute('hidden');
+      var current   = 0;
+      var total     = reviews.length;
+      var autoTimer = null;
+      var isDragging = false;
+      var dragStartX = 0;
+      var dragDeltaX = 0;
 
-      reviews.forEach(function (r) {
-        const card = document.createElement('article');
-        card.className = 'review-card fade-up';
-        card.setAttribute('role', 'listitem');
+      // Build slides
+      reviews.forEach(function (r, i) {
+        var meta = r.business
+          ? r.business + ' &middot; ' + r.trade + ', ' + r.town
+          : r.trade + ', ' + r.town;
 
-        card.innerHTML =
-          '<p class="review-card__quote">' + escHtml(r.quote) + '</p>' +
-          '<p class="review-card__name">'  + escHtml(r.name)  + '</p>' +
-          '<p class="review-card__meta">'  + escHtml(r.business) + ' &middot; ' + escHtml(r.trade) + ', ' + escHtml(r.town) + '</p>' +
-          (r.result ? '<p class="review-card__result">' + escHtml(r.result) + '</p>' : '');
+        var slide = document.createElement('div');
+        slide.className = 'carousel__slide';
+        slide.setAttribute('role', 'listitem');
+        slide.setAttribute('aria-label', 'Review ' + (i + 1) + ' of ' + total);
 
-        grid.appendChild(card);
+        slide.innerHTML =
+          '<article class="review-card">' +
+            '<div class="review-card__stars">' +
+              starSvg() + starSvg() + starSvg() + starSvg() + starSvg() +
+            '</div>' +
+            '<p class="review-card__quote">' + escHtml(r.quote) + '</p>' +
+            '<p class="review-card__name">'  + escHtml(r.name)  + '</p>' +
+            '<p class="review-card__meta">'  + meta              + '</p>' +
+            (r.result ? '<p class="review-card__result">' + escHtml(r.result) + '</p>' : '') +
+          '</article>';
+
+        track.appendChild(slide);
       });
+
+      // Build dots
+      reviews.forEach(function (_, i) {
+        var dot = document.createElement('button');
+        dot.className = 'carousel__dot' + (i === 0 ? ' carousel__dot--active' : '');
+        dot.setAttribute('role', 'tab');
+        dot.setAttribute('aria-label', 'Go to review ' + (i + 1));
+        dot.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+        dot.addEventListener('click', function () { goTo(i); restartAuto(); });
+        dots.appendChild(dot);
+      });
+
+      function goTo(n) {
+        current = (n + total) % total;
+        track.style.transform = 'translateX(-' + (current * 100 / total * total / reviews.length) + '%)';
+
+        // simpler: each slide is flex 0 0 X%, so offset by current * slideWidth
+        // We measure the actual slide width
+        var slideWidth = track.children[0] ? track.children[0].offsetWidth : 0;
+        track.style.transform = 'translateX(-' + (current * slideWidth) + 'px)';
+
+        dots.querySelectorAll('.carousel__dot').forEach(function (d, i) {
+          d.classList.toggle('carousel__dot--active', i === current);
+          d.setAttribute('aria-selected', i === current ? 'true' : 'false');
+        });
+
+        btnPrev.disabled = false;
+        btnNext.disabled = false;
+      }
+
+      function next() { goTo(current + 1); }
+      function prev() { goTo(current - 1); }
+
+      btnNext.addEventListener('click', function () { next(); restartAuto(); });
+      btnPrev.addEventListener('click', function () { prev(); restartAuto(); });
+
+      // Autoplay
+      function startAuto() {
+        autoTimer = setInterval(function () { next(); }, 5000);
+      }
+      function restartAuto() {
+        clearInterval(autoTimer);
+        startAuto();
+      }
+
+      // Pause on hover/focus
+      var carousel = document.getElementById('reviews-carousel');
+      carousel.addEventListener('mouseenter', function () { clearInterval(autoTimer); });
+      carousel.addEventListener('mouseleave', startAuto);
+      carousel.addEventListener('focusin',    function () { clearInterval(autoTimer); });
+      carousel.addEventListener('focusout',   startAuto);
+
+      // Touch / mouse drag
+      function onDragStart(x) { isDragging = true; dragStartX = x; dragDeltaX = 0; clearInterval(autoTimer); }
+      function onDragMove(x)  { if (!isDragging) return; dragDeltaX = x - dragStartX; }
+      function onDragEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        if      (dragDeltaX < -50) next();
+        else if (dragDeltaX >  50) prev();
+        restartAuto();
+      }
+
+      track.addEventListener('touchstart', function (e) { onDragStart(e.touches[0].clientX); }, { passive: true });
+      track.addEventListener('touchmove',  function (e) { onDragMove(e.touches[0].clientX);  }, { passive: true });
+      track.addEventListener('touchend',   onDragEnd);
+
+      track.addEventListener('mousedown', function (e) { onDragStart(e.clientX); });
+      window.addEventListener('mousemove', function (e) { onDragMove(e.clientX); });
+      window.addEventListener('mouseup',   onDragEnd);
+
+      // Init
+      goTo(0);
+      startAuto();
+
+      // Recalc on resize
+      window.addEventListener('resize', function () { goTo(current); });
     })();
 
     function escHtml(str) {
       return String(str)
-        .replace(/&/g,  '&amp;')
-        .replace(/</g,  '&lt;')
-        .replace(/>/g,  '&gt;')
-        .replace(/"/g,  '&quot;');
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
     // =============================================================
-    // FADE-UP OBSERVER
+    // SCROLL FADE-UP
     // =============================================================
     (function () {
-      var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (prefersReduced) return;
-
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
-          if (e.isIntersecting) {
-            e.target.classList.add('visible');
-            io.unobserve(e.target);
-          }
+          if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
         });
-      }, { threshold: 0.1 });
-
-      document.querySelectorAll('.fade-up').forEach(function (el) {
-        io.observe(el);
-      });
+      }, { threshold: 0.08 });
+      document.querySelectorAll('.fade-up').forEach(function (el) { io.observe(el); });
     })();
 
     // =============================================================
-    // STICKY BAR - hide when form is in view
+    // STICKY BAR
     // =============================================================
     (function () {
       var bar  = document.getElementById('stickyBar');
       var form = document.getElementById('form');
       if (!bar || !form) return;
-
       var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (e.isIntersecting) {
-            bar.classList.add('hidden');
-          } else {
-            bar.classList.remove('hidden');
-          }
-        });
+        bar.classList.toggle('hidden', entries[0].isIntersecting);
       }, { threshold: 0.15 });
-
       io.observe(form);
     })();
 
@@ -932,30 +1035,20 @@
     // VIDEO SOUND TOGGLE
     // =============================================================
     (function () {
-      var btn        = document.getElementById('soundBtn');
-      var video      = document.querySelector('.video-wrap video');
-      var iconMuted  = document.getElementById('iconMuted');
-      var iconSound  = document.getElementById('iconSound');
-      var label      = document.getElementById('soundLabel');
-
+      var btn       = document.getElementById('soundBtn');
+      var video     = document.querySelector('.video-wrap video');
+      var iconMuted = document.getElementById('iconMuted');
+      var iconSound = document.getElementById('iconSound');
+      var label     = document.getElementById('soundLabel');
       if (!btn || !video) return;
-
       btn.addEventListener('click', function () {
-        if (video.muted) {
-          video.muted = false;
-          iconMuted.style.display  = 'none';
-          iconSound.style.display  = '';
-          label.textContent        = 'Mute';
-          btn.setAttribute('aria-label', 'Mute video');
-          btn.setAttribute('aria-pressed', 'true');
-        } else {
-          video.muted = true;
-          iconMuted.style.display  = '';
-          iconSound.style.display  = 'none';
-          label.textContent        = 'Tap for sound';
-          btn.setAttribute('aria-label', 'Unmute video');
-          btn.setAttribute('aria-pressed', 'false');
-        }
+        var muting = !video.muted;
+        video.muted = muting;
+        iconMuted.style.display = muting ? '' : 'none';
+        iconSound.style.display = muting ? 'none' : '';
+        label.textContent = muting ? 'Tap for sound' : 'Mute';
+        btn.setAttribute('aria-label',   muting ? 'Unmute video' : 'Mute video');
+        btn.setAttribute('aria-pressed', muting ? 'false' : 'true');
       });
     })();
   </script>
